@@ -4,19 +4,19 @@ from socket import AF_INET, socket, SOCK_STREAM
 # from threading import Thread
 import threading
 
-class StoppableThread(threading.Thread):
-    """Thread class with a stop() method. The thread itself has to check
-    regularly for the stopped() condition."""
+# class StoppableThread(threading.Thread):
+#     """Thread class with a stop() method. The thread itself has to check
+#     regularly for the stopped() condition."""
 
-    def __init__(self,  *args, **kwargs):
-        super(StoppableThread, self).__init__(*args, **kwargs)
-        self._stop_event = threading.Event()
+#     def __init__(self,  *args, **kwargs):
+#         super(StoppableThread, self).__init__(*args, **kwargs)
+#         self._stop_event = threading.Event()
 
-    def stop(self):
-        self._stop_event.set()
+#     def stop(self):
+#         self._stop_event.set()
 
-    def stopped(self):
-        return self._stop_event.is_set()
+#     def stopped(self):
+#         return self._stop_event.is_set()
 
 def accept_incoming_connections():
     """Sets up handling for incoming clients."""
@@ -69,37 +69,37 @@ ADDR = (HOST, PORT)
 SERVER = socket(AF_INET, SOCK_STREAM)
 SERVER.bind(ADDR)
 
-def joinThread(tt):
-    global kill_flag
-    if kill_flag: SERVER.close()
-    else: tt.join()
-    return
+# def joinThread(tt):
+#     global kill_flag
+#     if kill_flag: SERVER.close()
+#     else: tt.join()
+#     return
 
-def askinput():
-    global kill_flag
-    print('ehi?')
-    choice = input("Want to kill?")
-    if choice == '':
-        kill_flag = True
-    else:
-        return 0
-    return 1
+# def askinput():
+#     global kill_flag
+#     print('ehi?')
+#     choice = input("Want to kill?")
+#     if choice == '':
+#         kill_flag = True
+#     else:
+#         return 0
+#     return 1
 
 if __name__ == "__main__":
     SERVER.listen(5)
     print("Waiting for connection...")
-    ACCEPT_THREAD = StoppableThread(target=accept_incoming_connections)
+    ACCEPT_THREAD = threading.Thread(target=accept_incoming_connections)
     ACCEPT_THREAD.start()
-    # ACCEPT_THREAD.join()
-    kill_flag = False
-    t = threading.Thread(target=joinThread(ACCEPT_THREAD))
-    t.start()
-    print('HI')
-    th2 = threading.Thread(target=askinput)
-    th2.start()
+    ACCEPT_THREAD.join()
+    SERVER.close()
+    # kill_flag = False
+    # t = threading.Thread(target=joinThread(ACCEPT_THREAD))
+    # t.start()
+    # th2 = threading.Thread(target=askinput)
+    # th2.start()
 
-    t.join()
-    th2.join()
+    # t.join()
+    # th2.join()
     # while askinput():
     #     pass
     # exit_flag = input('Want to end?')
