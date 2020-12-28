@@ -15,6 +15,7 @@ def receive():
             msg_list.see('end')
         except OSError:  # Possibly client has left the chat.
             break
+        print('ciao')
 
 
 def send(event=None):  # event is passed by binders.
